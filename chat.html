@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المحادثة | Limitless</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <!-- Header -->
+  <header class="bg-white p-4 shadow-md flex justify-between items-center">
+    <h1 class="text-xl font-bold">Limitless</h1>
+    <nav>
+      <a href="offers.html" class="text-indigo-600 font-semibold hover:underline">رجوع للعروض</a>
+    </nav>
+  </header>
+
+  <!-- Chat Container -->
+  <main class="p-6 max-w-3xl mx-auto">
+    <h2 class="text-2xl font-bold mb-2">محادثة مع: سلمان القحطاني</h2>
+    <p class="text-sm text-gray-500 mb-4">الفعالية: مؤتمر ريادة الأعمال</p>
+
+    <div class="bg-white rounded shadow p-4 h-96 overflow-y-auto space-y-4 mb-4">
+      <!-- Incoming Message -->
+      <div class="flex items-start gap-2">
+        <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full" />
+        <div class="bg-gray-200 p-3 rounded-lg max-w-xs">
+          <p>مرحباً، أنا متاح في التاريخ المطلوب ومستعد للخدمة.</p>
+        </div>
+      </div>
+
+      <!-- Outgoing Message -->
+      <div class="flex items-end justify-end gap-2">
+        <div class="bg-indigo-600 text-white p-3 rounded-lg max-w-xs">
+          <p>شكرًا سلمان، هل عندك خبرة في مؤتمرات سابقة؟</p>
+        </div>
+        <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full" />
+      </div>
+    </div>
+
+    <!-- Input Area -->
+    <form class="flex gap-2">
+      <input type="text" placeholder="اكتب رسالتك..." class="flex-grow p-3 border rounded">
+      <button type="submit" class="bg-indigo-600 text-white px-4 rounded hover:bg-indigo-700">إرسال</button>
+    </form>
+  </main>
+
+</body>
+</html>
