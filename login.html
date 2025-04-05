@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول | Limitless</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen text-gray-800">
+
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold mb-6">تسجيل الدخول إلى Limitless</h1>
+
+    <button id="googleLogin" class="bg-red-500 text-white py-3 px-4 rounded hover:bg-red-600 w-full mb-4">
+      تسجيل الدخول باستخدام Google
+    </button>
+
+    <p class="text-sm mt-4">
+      ما عندك حساب؟
+      <a href="signup.html" class="text-indigo-600 hover:underline">سجّل الآن</a>
+    </p>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFlpSbKzwpkayATrvJumUCQc-68sTccHY",
+      authDomain: "limitless-auth-2e2ee.firebaseapp.com",
+      projectId: "limitless-auth-2e2ee",
+      storageBucket: "limitless-auth-2e2ee.firebasestorage.app",
+      messagingSenderId: "762209569696",
+      appId: "1:762209569696:web:eef496896e9fb1b6f2f2c5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    document.getElementById("googleLogin").addEventListener("click", () => {
+      signInWithPopup(auth, provider)
+        .then((result) => {
+          const user = result.user;
+          alert(`مرحباً ${user.displayName} ✅`);
+          window.location.href = "client-dashboard.html";
+        })
+        .catch((error) => {
+          console.error("Login Error:", error);
+          alert("حدث خطأ أثناء تسجيل الدخول!");
+        });
+    });
+  </script>
+</body>
+</html>
