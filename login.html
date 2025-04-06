@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول | Limitless</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      background-color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    button {
+      background-color: #db4437;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #c33d2f;
+    }
+
+    a {
+      color: #4b4bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <h2>تسجيل الدخول إلى <strong>Limitless</strong></h2>
+    <button id="google-login">تسجيل الدخول باستخدام Google</button>
+    <p>ليس لديك حساب؟ <a href="signup.html">سجّل الآن</a></p>
+  </div>
+
+  <!-- Firebase Core -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <!-- إعداد مشروعك -->
+  <script src="firebase.js"></script>
+
+  <!-- تسجيل الدخول -->
+  <script>
+    document.getElementById("google-login").addEventListener("click", function () {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+          window.location.href = "select-role.html";
+        })
+        .catch((error) => {
+          console.error("Login error:", error);
+          alert("حدث خطأ أثناء تسجيل الدخول");
+        });
+    });
+  </script>
+
+</body>
+</html>
