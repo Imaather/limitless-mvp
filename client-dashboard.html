@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><title>لوحة تحكم العميل</title></head><body><h1>أهلاً بك في لوحة تحكم العميل</h1>
+<button onclick="toggleRole()" style="margin-top: 20px; padding: 10px 20px; background-color: #6c5ce7; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+  🔁 تبديل بين الأدوار
+</button>
+<script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { app } from "./firebase.js";
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  async function toggleRole() {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const roles = userSnap.data().roles || [];
+          let currentPage = window.location.pathname.includes("client") ? "client" : "provider";
+          let target = currentPage === "client" ? "provider" : "client";
+          if (roles.includes(target)) {
+            window.location.href = `/${target}-dashboard.html`;
+          } else {
+            alert("لا يمكنك التبديل لهذا الدور لأن حسابك لا يملكه.");
+          }
+        }
+      }
+    });
+  }
+</script>
+
+</body></html>
