@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>اختيار الدور</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+    p {
+      margin-bottom: 2rem;
+      color: #666;
+    }
+    button {
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #357ABD;
+    }
+    .container {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>اختر دورك</h1>
+    <p>هل أنت عميل أم مزود خدمة؟</p>
+    <button onclick="selectRole('client')">عميل</button>
+    <button onclick="selectRole('provider')">مزود خدمة</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBFlpSbKzwpkayATrvJumUCQc-68sTccHY",
+      authDomain: "limitless-auth-2e2ee.firebaseapp.com",
+      projectId: "limitless-auth-2e2ee",
+      storageBucket: "limitless-auth-2e2ee.appspot.com",
+      messagingSenderId: "762209569696",
+      appId: "1:762209569696:web:eef496896e9fb1b6f2f2c5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    function selectRole(role) {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            role: role,
+            createdAt: new Date().toISOString()
+          }, { merge: true });
+
+          if (role === "client") {
+            window.location.href = "/client-dashboard.html";
+          } else {
+            window.location.href = "/provider-dashboard.html";
+          }
+        } else {
+          alert("الرجاء تسجيل الدخول أولاً");
+        }
+      });
+    }
+  </script>
+</body>
+</html>
