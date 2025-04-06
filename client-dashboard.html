@@ -1,0 +1,92 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة تحكم العميل | Limitless</title>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <style>
+    body { font-family: 'Arial', sans-serif; background: #f7f7f7; padding: 40px; direction: rtl; }
+    .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, textarea { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #4f46e5; color: white; padding: 12px 20px; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #4338ca; }
+    h2 { text-align: center; margin-bottom: 30px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>طلب خدمة جديدة</h2>
+    <input type="text" id="event-type" placeholder="نوع الفعالية" required>
+    <input type="date" id="event-date" required>
+    <input type="time" id="event-time" required style="direction: ltr;">
+    <input type="text" id="event-location" placeholder="موقع الفعالية" required>
+    <input type="number" id="staff-count" placeholder="إجمالي عدد مزودي الخدمة" required>
+    
+    <label for="staff-type">أنواع الكادر (اختر أكثر من نوع):</label>
+    <select id="staff-type" multiple required>
+      <option value="منظمين">منظمين</option>
+      <option value="مشرفين">مشرفين</option>
+      <option value="أمن">أمن</option>
+      <option value="ضيافة VIP">ضيافة VIP</option>
+      <option value="مدير عمليات">مدير عمليات</option>
+      <option value="مدير مشروع">مدير مشروع</option>
+    </select>
+
+    <textarea id="notes" placeholder="ملاحظات إضافية (اختياري)"></textarea>
+    <button id="submit-request">نشر الطلب</button>
+  </div>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    document.getElementById('submit-request').addEventListener('click', async () => {
+      const eventType = document.getElementById('event-type').value;
+      const eventDate = document.getElementById('event-date').value;
+      const eventTime = document.getElementById('event-time').value;
+      const eventLocation = document.getElementById('event-location').value;
+      const staffCount = document.getElementById('staff-count').value;
+      const staffTypes = Array.from(document.getElementById('staff-type').selectedOptions).map(opt => opt.value);
+      const notes = document.getElementById('notes').value;
+
+      if (!eventType || !eventDate || !eventTime || !eventLocation || !staffCount || staffTypes.length === 0) {
+        alert("يرجى تعبئة جميع الحقول المطلوبة.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "requests"), {
+          eventType,
+          eventDate,
+          eventTime,
+          eventLocation,
+          staffCount,
+          staffTypes,
+          notes,
+          createdAt: serverTimestamp(),
+          status: "في الانتظار"
+        });
+
+        alert("✅ تم إرسال الطلب بنجاح");
+
+        document.getElementById('event-type').value = "";
+        document.getElementById('event-date').value = "";
+        document.getElementById('event-time').value = "";
+        document.getElementById('event-location').value = "";
+        document.getElementById('staff-count').value = "";
+        document.getElementById('staff-type').selectedIndex = -1;
+        document.getElementById('notes').value = "";
+
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        alert("❌ حدث خطأ أثناء إرسال الطلب");
+      }
+    });
+  </script>
+
+</body>
+</html>
