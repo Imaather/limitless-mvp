@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>العروض المقدمة | Limitless</title>
+  <script type="module" src="firebase.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-800 py-8 px-4">
+
+  <div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-bold text-center mb-6">العروض المقدمة</h1>
+    <div id="offers-list" class="space-y-4"></div>
+  </div>
+
+  <script type="module">
+    import { db } from './firebase.js';
+    import {
+      collection,
+      getDocs,
+      updateDoc,
+      doc,
+      serverTimestamp
+    } from 'https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js';
+
+    const offersList = document.getElementById('offers-list');
+
+    async function loadOffers() {
+      const querySnapshot = await getDocs(collection(db, 'offers'));
+      offersList.innerHTML = "";
+
+      querySnapshot.forEach((offerDoc) => {
+        const offer = offerDoc.data();
+        const offerId = offerDoc.id;
+
+        const card = document.createElement('div');
+        card.className = 'bg-white p-6 rounded shadow';
+
+        card.innerHTML = `
+          <h2 class="text-xl font-semibold mb-2">مزود الخدمة: ${offer.providerName}</h2>
+          <p class="mb-1"><strong>السعر:</strong> ${offer.price} ريال</p>
+          <p class="mb-1"><strong>الوصف:</strong> ${offer.description}</p>
+          <p class="mb-3 text-sm text-gray-500"><strong>ID الطلب:</strong> ${offer.requestId}</p>
+          <button data-id="${offerId}" class="accept-btn bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+            قبول العرض
+          </button>
+        `;
+
+        offersList.appendChild(card);
+      });
+
+      document.querySelectorAll('.accept-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+          const offerId = button.getAttribute('data-id');
+          const offerRef = doc(db, 'offers', offerId);
+
+          await updateDoc(offerRef, {
+            status: 'تم القبول',
+            acceptedAt: serverTimestamp()
+          });
+
+          alert("✅ تم قبول العرض بنجاح!");
+          button.disabled = true;
+          button.textContent = "تم القبول";
+          button.classList.add("bg-gray-400", "cursor-not-allowed");
+        });
+      });
+    }
+
+    loadOffers();
+  </script>
+
+</body>
+</html>
