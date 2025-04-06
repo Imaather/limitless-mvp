@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>اختر دورك</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div style="text-align: center; margin-top: 100px;">
+      <h1>اختر دورك</h1>
+      <p>هل أنت عميل أم مزود خدمة؟</p>
+      <button id="clientBtn" class="btn">عميل</button>
+      <button id="providerBtn" class="btn">مزود خدمة</button>
+    </div>
+
+    <script type="module">
+      import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+      import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+      import { app } from "./firebase.js";
+
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      const clientBtn = document.getElementById("clientBtn");
+      const providerBtn = document.getElementById("providerBtn");
+
+      clientBtn.addEventListener("click", () => setRole("client"));
+      providerBtn.addEventListener("click", () => setRole("provider"));
+
+      function setRole(role) {
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            const userRef = doc(db, "users", user.uid);
+            await updateDoc(userRef, { role });
+
+            if (role === "client") {
+              window.location.href = "client-dashboard.html";
+            } else if (role === "provider") {
+              window.location.href = "provider-dashboard.html";
+            }
+          } else {
+            alert("الرجاء تسجيل الدخول أولاً");
+            window.location.href = "login.html";
+          }
+        });
+      }
+    </script>
+
+    <style>
+      .btn {
+        background-color: #6c5ce7;
+        color: white;
+        padding: 12px 24px;
+        margin: 10px;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background-color: #4b3bcf;
+      }
+    </style>
+  </body>
+</html>
